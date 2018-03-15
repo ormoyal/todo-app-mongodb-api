@@ -7,6 +7,10 @@ const {Todo} = require('./models/Todo');
 
 var app = express();
 
+app.listen(3000,(res,ee,rr) => {
+    console.log(`started on port 3000 `);
+});
+
 app.use(bodyParser.json());
 
 app.post('/todos', (req,res) => {
@@ -21,9 +25,12 @@ app.post('/todos', (req,res) => {
     })
 });
 
-
-app.listen(3000,(res,ee,rr) => {
-    console.log(`started on port 3000 `);
+app.get('/todos', (req,res,n) => {
+    Todo.find().then((todos) => {
+        res.send({todos})
+    },err => {
+        res.status(400).send(err);
+    })
 })
 
 module.exports = {app};

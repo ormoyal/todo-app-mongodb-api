@@ -15,13 +15,15 @@ describe('/Todos - POST ', () => {
 
     it('shold add todo ', (done) => {
         var text =  'some text1';
-
+        
         request(app)
         .post('/todos')
         .send({text})
         .expect(200)
         .expect((res) => {
             expect(res.body.text).toBe(text);
+            // return done();
+
         })
         .end((err,res) => {
             if(err) return done(err);
