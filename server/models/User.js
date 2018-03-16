@@ -6,7 +6,13 @@ var User = mongoose.model('User',{
         required:true,
         minlength:1,
         trim:true
-    }
+    },
+    text:{
+        type: String,
+        required:true,
+        minlength:1,
+        trim:true
+    },
 });
 
 // var orUser = new User({
@@ -19,4 +25,4 @@ var User = mongoose.model('User',{
 //     console.log(`err ${err}`);
 // }));
 
-module.exprots = {User};
+module.exports = {User};
