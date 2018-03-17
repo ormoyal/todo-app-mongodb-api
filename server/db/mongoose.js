@@ -5,7 +5,7 @@ mongoose.Promise = global.Promise;
 var connectPath, options;
 //Check if we are on Heroku
 
-mongoose.connect('mongodb://Admin:<orAdmin123>@ds115799.mlab.com:15799/mongodb-todo-app-api', {
+mongoose.connect('mongodb://Admin:orAdmin123@ds115799.mlab.com:15799/mongodb-todo-app-api', {
     auth: {
         user: 'Admin',
         password: 'orAdmin123'
