@@ -9,8 +9,10 @@ const {Todo} = require('./models/Todo');
 
 var app = express();
 
-app.listen(3000,(res,ee,rr) => {
-    console.log(`started on port 3000 `);
+const port = process.env.port || 3000; 
+
+app.listen(port,() => {
+    console.log(`started on port ${port} `);
 });
 
 app.use(bodyParser.json());
@@ -39,7 +41,8 @@ app.get('/todos', (req,res,n) => {
 app.get('/todos/:id', (req,res) => {
     
     var id = req.params.id;
-    if(!ObjectID.isValid(id)) return res.status(404).send('id is not valid');
+    // console.log('123id ',id)
+    if(!ObjectID.isValid(id)) return res.status(400).send('id is not valid');
 
     Todo.findById(id).then(todo => {
         if(!todo) return res.status(404).send('user not found');

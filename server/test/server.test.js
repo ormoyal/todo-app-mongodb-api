@@ -1,22 +1,26 @@
+
 const expect = require('expect');
 const request = require('supertest');
+const {ObjectID} = require('mongodb');
 
 const {app} = require('./../server');
 const {Todo} = require('./../models/Todo');
 
-todos = [{
+var todos = [{
+    _id: new ObjectID(),
     text: 'eat all day'
 },{
+    _id: new ObjectID(),    
     text: 'clean my room'
 }];
 
 beforeEach((done) => {
     Todo.remove().then(() => {
        return Todo.insertMany(todos, (err,docs) => {
-           if(err) return done(err);      
-        //    done();
+           if(err) return done(err);   
+        //    done('2');  
        });
-    }).then(() => done());
+    }).then((send) => done());
 });
 
 describe('/Todos - POST ', () => {
@@ -29,7 +33,7 @@ describe('/Todos - POST ', () => {
         .send({text})
         .expect(200)
         .expect((res) => {
-            console.log(res.body.text);
+            // console.log(res.body.text);
             expect(res.body.text).toBe(text);
             // return done();
         })
@@ -54,7 +58,6 @@ describe('/Todos - POST ', () => {
         .send({})
         .expect(400)
         .end((err,results) => {
-
             if(err) return done(err);
 
             Todo.find().then(todos => {
@@ -83,3 +86,28 @@ describe('Get /todos',() => {
     })
 })
 
+describe('Get /todos/:id', () => {
+    it('should return todo doc', (done) => {
+        request(app)
+        .get(`/todos/${todos[1]._id.toHexString()}`)
+        .expect(200)
+        .expect((res) => {
+            expect(res.body.todo.text).toBe(todos[1].text)
+        })
+        .end(done);
+    });
+  
+    it('should return 404 if todo not found', (done) => {
+        request(app)
+        .get(`/todos/${new ObjectID().toHexString()}`)
+        .expect(404)
+        .end(done);
+    });
+    
+    it('should return 400 for non-object ids', (done) => {
+        request(app)
+        .get(`/todos/123`)
+        .expect(400)
+        .end(done);
+    });
+});
