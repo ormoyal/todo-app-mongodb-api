@@ -18,7 +18,7 @@ if(process.env.PORT){
 }
 mongoose.connect(connectPath, options);
 
-// console.log('process.env ',process.env);
+console.log('process.env ',process.env);
 
 // mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/TodoAppDB');
 
