@@ -8,8 +8,8 @@ if(process.env.PORT){
  connectPath = "mongodb://<Admin>:<orAdmin123>@ds115799.mlab.com:15799/mongodb-todo-app-api";
  options= {
      auth: {
-         user: '<Admin>',
-         password: '<orAdmin123>'
+         user: 'Admin',
+         password: 'orAdmin123'
      }
  }
 }else{
