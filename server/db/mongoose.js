@@ -2,7 +2,24 @@ const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
-console.log('process.env ',process.env);
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/TodoAppDB');
+var connectPath, options;
+//Check if we are on Heroku
+if(process.env.PORT){
+ connectPath = "mongodb://Admin:orAdmin123@ds115799.mlab.com:15799/mongodb-todo-app-api";
+ options= {
+     auth: {
+         user: 'Admin',
+         password: 'orAdmin123'
+     }
+ }
+}else{
+ connectPath = "mongodb://localhost:27017/TodoApp";
+ options = {}
+}
+mongoose.connect(connectPath, options);
+
+// console.log('process.env ',process.env);
+
+// mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/TodoAppDB');
 
 module.exports = {mongoose};
