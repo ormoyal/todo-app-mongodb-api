@@ -1,3 +1,5 @@
+require('./config/config')
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
@@ -10,7 +12,7 @@ const {Todo} = require('./models/Todo');
 
 var app = express();
 
-const port = process.env.PORT || 3000; 
+const port = process.env.PORT;
 
 app.listen(port,() => {
     console.log(`started on port ${port} `);
@@ -89,8 +91,6 @@ app.patch('/todos/:id', (req,res) => {
     Todo.findByIdAndUpdate(id,{$set: body},{new:true}).then(updated => {
         if(!updated)
             return res.status(404).send('id is not found');
-
-            console.log('updated ',updated);
 
         res.send({updated});
     }).catch(err => {

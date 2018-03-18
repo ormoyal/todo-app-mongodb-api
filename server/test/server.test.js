@@ -150,7 +150,7 @@ describe('Delete /todos/:id',() => {
 });
 
 describe('Patch /todos/:id',() => {
-    it('should update the todo', done => {
+    it('should update the todo', (done) => {
         let id = todos[0]._id.toHexString();
         let text = 'lalala', completed = true;
 
@@ -159,16 +159,13 @@ describe('Patch /todos/:id',() => {
         .send({text,completed})
         .expect(200)
         .expect(res => {
-            // console.log('body1', res.body);
             expect(res.body.updated.text).toBe(text);
             expect(res.body.updated.completed).toBe(true);
             expect(typeof res.body.updated.completedAt).toBe('number');
         }).end(done);
-        
-
     });
 
-    it('should clear completedAt when todo is not completed', done => {
+    it('should clear completedAt when todo is not completed', (done) => {
         let id = todos[1]._id.toHexString();
         let text = 'kokokoko', completed = false;
 
@@ -177,11 +174,9 @@ describe('Patch /todos/:id',() => {
         .send({text,completed})
         .expect(200)
         .expect(res => {
-            console.log('body2', res.body.updated);
             expect(res.body.updated.text).toBe(text);
             expect(res.body.updated.completed).toBe(false);
             expect(res.body.updated.completedAt).toBeFalsy();
         }).end(done)
-
     });
 })
