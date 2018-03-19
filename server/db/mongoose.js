@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
-var connectPath, options;
+var options;
 //Check if we are on Heroku
-console.log(`**before connection to DB ${process.env.MONGODB_URI} PORT: ${process.env.PORT}** `);
 
 
 if(process.env.NODE_ENV === 'production'){
@@ -16,13 +15,9 @@ if(process.env.NODE_ENV === 'production'){
      }
  }
 }else{
-//  process.env.MONGODB_URI = "mongodb://localhost:27017/TodoAppDB";
  options = {}
 }
 
-mongoose.connect(process.env.MONGODB_URI, options);
-
-console.log(`**AFTER connection to DB in mongoose.js page! ${process.env.MONGODB_URI} PORT: ${process.env.PORT}** `);
-
+mongoose.connect(process.env.MONGODB_URI);
 
 module.exports = {mongoose};
