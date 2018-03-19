@@ -1,10 +1,15 @@
-require('./config/config')
+console.log(`**START of server.js page before require CONFIG! ${process.env.MONGODB_URI} PORT: ${process.env.PORT}** `);
+
+require('./config/config');
+console.log(`**server.js page AFTER require CONFIG! ${process.env.MONGODB_URI} PORT: ${process.env.PORT}** `);
 
 const express = require('express');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
-
+console.log('1')
 const {mongoose} = require('./db/mongoose');
+console.log('2')
+
 const {ObjectID} = require('mongodb');
 
 const {User} = require('./models/User');
