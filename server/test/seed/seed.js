@@ -17,7 +17,7 @@ var users = [{
 },{
     _id:userTwoId,
     email:'ormoyal2@decon.co.il',
-    password:123456
+    password:'123456'
 }];
 
 const populateUsers = (done) => {

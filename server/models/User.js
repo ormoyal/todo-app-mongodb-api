@@ -82,10 +82,8 @@ userSchema.pre('save', function(next){
     if(user.isModified('password')){
         bcryptjs.genSalt(10,(err,salt) => {
             if(err) next('bad');
-            console.log('genereated salt ',salt)
             bcryptjs.hash(user.password,salt,(err,encryptedPassword) => {
                 if(err) next(err);
-                console.log('genereated hash ',encryptedPassword)
                 user.password = encryptedPassword;
                 next();
             });
@@ -99,11 +97,10 @@ userSchema.statics.findByCredentials = function(email,password){
     let User = this;
 
     return User.findOne({email}).then(user => {
-        if(!user) return Promise.reject({message:'user doesn\'t exist',status:404});
+        if(!user) return Promise.reject('user doesn\'t exist');
         return new Promise((resolve,reject) => {
-            console.log('get here')
             bcryptjs.compare(password,user.password,(err,match) => {
-                if(err) reject('error in password');
+                if(err) reject(err);
                 if(!match)  reject('wrong password, try again');
                 resolve(user);
             });

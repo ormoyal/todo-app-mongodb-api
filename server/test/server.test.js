@@ -191,7 +191,7 @@ describe('Get /users/me', () => {
     });
 });
 
-describe('',() => {
+describe('Post /users',() => {
     it('should create a user',done => {
         var email = 'ori@koki.com',
          password = 'orikokiko';
@@ -238,4 +238,37 @@ describe('',() => {
         .expect(400)
         .end(done);
     });
-})
+});
+
+describe('Post /users/login', () => {
+    it('should return user if credentials correct',(done) => {
+        request(app)
+        .post('/users/login')
+        .send({
+            email:users[1].email,
+            password:users[1].password            
+        })
+        .expect(200)
+        .expect(res => {
+            expect(res.body.email).toBe(users[1].email);
+            expect(res.header['x-auth']).toBeTruthy();
+        })
+        .end((err,res) => {
+            if(err) return done(err);
+            User.findOne({email:users[1].email}).then(user => {
+                expect(user.tokens[0].token).toBe(res.header['x-auth'])
+                done();
+            }).catch(e => done(e));
+        });
+    });
+    it('should reject invalid login',(done) => {
+        var email = 'asdfas',
+        password = '1234456';
+
+        request(app)
+        .post('/users/login')
+        .send({email,password})
+        .expect(400)
+        .end(done);
+    });
+});
