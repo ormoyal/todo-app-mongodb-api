@@ -1,3 +1,4 @@
+
 const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
@@ -77,11 +78,14 @@ userSchema.statics.findByToken = function(token){
 
 userSchema.pre('save', function(next){
     var user = this;
+    
     if(user.isModified('password')){
         bcryptjs.genSalt(10,(err,salt) => {
             if(err) next('bad');
+            console.log('genereated salt ',salt)
             bcryptjs.hash(user.password,salt,(err,encryptedPassword) => {
                 if(err) next(err);
+                console.log('genereated hash ',encryptedPassword)
                 user.password = encryptedPassword;
                 next();
             });
@@ -89,8 +93,23 @@ userSchema.pre('save', function(next){
     }else{
         next();
     }
-
 });
+
+userSchema.statics.findByCredentials = function(email,password){
+    let User = this;
+
+    return User.findOne({email}).then(user => {
+        if(!user) return Promise.reject({message:'user doesn\'t exist',status:404});
+        return new Promise((resolve,reject) => {
+            console.log('get here')
+            bcryptjs.compare(password,user.password,(err,match) => {
+                if(err) reject('error in password');
+                if(!match)  reject('wrong password, try again');
+                resolve(user);
+            });
+        });
+    });
+};
 
 
 

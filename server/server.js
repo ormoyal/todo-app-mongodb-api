@@ -115,11 +115,22 @@ app.post('/users', (req,res) => {
 });
 
 app.get('/users/me',authentication,(req,res) => {
-
     res.send(req.user);
-
 });
 
+app.post('/users/login',(req,res) => {
+    let body = _.pick(req.body,['email','password']);
+    
+    User.findByCredentials(body.email,body.password).then(user => {
+        return user.generateAuthToken().then(token => {
+            res.header('x-auth',token).send(user);
+        });
+    }).catch((e) => {
+        var status = e.status || 400;
+        console.log(status)
+        res.status(status).send(e.message || e);
+    });
+});
 
 
 module.exports = {app};
