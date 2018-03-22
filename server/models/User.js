@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcryptjs = require('bcryptjs');
+
 
 var userSchema = new mongoose.Schema({
     email:{
@@ -12,7 +14,7 @@ var userSchema = new mongoose.Schema({
         unique:true,
         validate:{
             validator: validator.isEmail,
-            message: '{VALUE} is not a valid email'
+            message: '\"{VALUE}\" is not a valid email'
         } 
     },
     password:{
@@ -34,12 +36,15 @@ var userSchema = new mongoose.Schema({
 
 });
 
-userSchema.methods.toJSON = function(){
-    let user = this;
-    var userObj = user.toObject();
+// userSchema.methods.toJSON = function(){
+//     let user = this;
 
-    return _.pick(userObj,['_id','email']);
-}
+//     // console.log('user ',user.email);
+
+//     // var userObj = user.toObject();
+//     //  console.log(userObj.email);
+//     return _.pick(user,['_id','email']);
+// }
 
 
 userSchema.methods.generateAuthToken = function(){
@@ -47,19 +52,16 @@ userSchema.methods.generateAuthToken = function(){
     let access = 'auth'
     let token = jwt.sign({_id:user._id.toHexString(), access},'mySaltSecret').toString();
 
-    // console.log(token);
-
    user.tokens = user.tokens.concat([{access,token}]);
 
    return user.save().then(() => {
        return token;
    })
-}
+};
 
 userSchema.statics.findByToken = function(token){
     var User = this;
     var decoded;
-
     try{
         decoded = jwt.verify(token,'mySaltSecret');
     } catch(e){
@@ -71,7 +73,26 @@ userSchema.statics.findByToken = function(token){
         'tokens.token': token,
         'tokens.access': 'auth'
     });
-}
+}; 
+
+userSchema.pre('save', function(next){
+    var user = this;
+    if(user.isModified('password')){
+        bcryptjs.genSalt(10,(err,salt) => {
+            if(err) next('bad');
+            bcryptjs.hash(user.password,salt,(err,encryptedPassword) => {
+                if(err) next(err);
+                user.password = encryptedPassword;
+                next();
+            });
+        })
+    }else{
+        next();
+    }
+
+});
+
+
 
 var User = mongoose.model('User',userSchema);
 

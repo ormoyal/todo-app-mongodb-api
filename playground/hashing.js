@@ -1,18 +1,38 @@
 const {SHA256} = require('crypto-js');
 const jwt = require('jsonwebtoken');
-
-var data = {
-    text: 'or moyal madafakasf'
-}
-
-var token = jwt.sign(data, 'abc123');
-
-var decodedToken = jwt.verify(token, 'abc123a');
+const bcryptjs = require('bcryptjs');
 
 
-console.log(token);
+var password = '12or12';
 
-console.log('decodedToken ',decodedToken);
+bcryptjs.genSalt(15,(err,salt) => {
+    console.log('salt ',salt)
+    bcryptjs.hash(password,salt,(err,encryptedPassword) => {
+        console.log(encryptedPassword);
+    })
+})
+
+// bcryptjs.compare(password,'$2a$15$cbU2u7Jwty10cMNX2uhAAuIjukacg9dyWz3P3zUqsY1kgZXVIWE3W',(err,res) => {
+//     console.log('2 ',res)
+//    if(err) console.log(err);
+// })
+
+//  ======================================================================
+
+// bcryptjs.compare('12or12',)
+
+// var data = {
+//     text: 'or moyal madafakasf'
+// }
+
+// var token = jwt.sign(data, 'abc123');
+
+// var decodedToken = jwt.verify(token, 'abc123a');
+
+
+// console.log(token);
+
+// console.log('decodedToken ',decodedToken);
 
 
 // var message = 'or moyal age 20';
@@ -40,3 +60,46 @@ console.log('decodedToken ',decodedToken);
 // }else {
 //     console.log('hacker has broke in');    
 // }
+
+//  ======================================================================
+
+// let password = 'Aa123';
+
+// var charset = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+// function crack(value){
+//     function toRadix(N,radix) {
+//         var HexN = "", 
+//             Q = Math.floor(Math.abs(N)), 
+//             R,
+//             strv = charset,
+//             radix = strv.length;
+
+//         while (true) {
+//             R = Q % radix;
+
+//             // console.log('Q ',Q);
+//             // console.log('strv ',strv);
+//             // console.log('radix ',radix);
+//             // console.log('R ',R);
+
+//             HexN = strv.charAt(R) + HexN;
+//             Q = (Q - R) / radix; 
+//             if (Q == 0) 
+//                 break;
+//         };
+//         return ((N < 0) ? "-" + HexN : HexN);
+//     };
+//     var start = (new Date()) * 1,
+//         cracked = false,
+//         index = 0;
+//     while(!cracked){
+//         if(toRadix(index) == value)
+//             cracked = true,
+//             console.log(toRadix(index));
+//         else
+//             index++;
+//     };
+//     console.log(((new Date()) * 1) - start);
+// };
+
+// crack(password)
