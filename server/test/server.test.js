@@ -269,3 +269,24 @@ describe('Post /users/login', () => {
 			.end(done);
 	});
 });
+
+
+describe('Delete /users/logout', () => {
+    it('should remove auth token when logout', (done) => {
+        request(app)
+        .delete('/users/logout')
+        .set('x-auth',users[0].tokens[0].token)
+        .expect(200)
+        .end((err,res) => {
+            if(err) return done(err);
+
+        User.findById(users[0]._id).then(user => {
+            if(!user) return done('user wasn\'t found');
+            expect(user.tokens.length).toBe(0);
+            done();
+        }).catch(e => {
+            done(e);
+        });
+        });
+    });
+});
