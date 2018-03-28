@@ -37,23 +37,24 @@ var userSchema = new mongoose.Schema({
 
 });
 
-// userSchema.methods.toJSON = function(){
-// 	// let user = this;
-// 	// console.log('user ',JSON.stringify(user.email,undefined,2));
-// 	// var userObj = user.toObject();
-// 	//  console.log('hhhhh ',JSON.stringify(userObj.email,undefined,2));
-// 	// return _.pick(this.toObject(),['_id','email']);
-// };
+userSchema.methods.toJSON = function(){
+	// let user = this;
+	// console.log('user ',JSON.stringify(user.email,undefined,2));
+	// var userObj = user.toObject();
+	//  console.log('hhhhh ',JSON.stringify(userObj.email,undefined,2));
+	return _.pick(this.toObject(),['_id','email']);
+};
 
 
 userSchema.methods.generateAuthToken = function(){
-	let user = this;
+
+    let user = this;
 	let access = 'auth';
-	let token = jwt.sign({_id:user._id.toHexString(), access},'mySaltSecret').toString();
+	let token = jwt.sign({_id:user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
 
-	user.tokens = user.tokens.concat([{access,token}]);
+    user.tokens = user.tokens.concat([{access,token}]);
 
-	return user.save().then(() => {
+    return user.save().then(() => {
 		return token;
 	});
 };
@@ -74,7 +75,7 @@ userSchema.statics.findByToken = function(token){
 	var User = this;
 	var decoded;
 	try{
-		decoded = jwt.verify(token,'mySaltSecret');
+		decoded = jwt.verify(token, process.env.JWT_SECRET);
 	} catch(e){
 		return Promise.reject();
 	}
@@ -105,13 +106,12 @@ userSchema.pre('save', function(next){
 
 userSchema.statics.findByCredentials = function(email,password){
 	let User = this;
-
 	return User.findOne({email}).then(user => {
-		if(!user) return Promise.reject('user doesn\'t exist');
+		if(!user) return Promise.reject('wrong password or password, please try again');
 		return new Promise((resolve,reject) => {
 			bcryptjs.compare(password,user.password,(err,match) => {
 				if(err) reject(err);
-				if(!match)  reject('wrong password, try again');
+                if(!match)  reject('wrong password or password, please try again');
 				resolve(user);
 			});
 		});

@@ -12,12 +12,16 @@ var users = [{
 	password:'123456',
 	tokens: [{
 		access: 'auth',
-		token: jwt.sign({_id:userOneId, access:'auth'}, 'mySaltSecret').toString()
-	}]
+		token: jwt.sign({_id:userOneId, access:'auth'}, process.env.JWT_SECRET).toString()
+    }]
 },{
 	_id:userTwoId,
 	email:'ormoyal2@decon.co.il',
-	password:'123456'
+    password:'123456',
+    tokens: [{
+		access: 'auth',
+		token: jwt.sign({_id:userTwoId, access:'auth'}, process.env.JWT_SECRET).toString()
+    }]
 }];
 
 const populateUsers = (done) => {
@@ -32,18 +36,14 @@ const populateUsers = (done) => {
 };
 
 
-
-
-
 var todos = [{
 	_id: new ObjectID(),
 	text: 'eat all day',
-	versionKey:123
+    _user:userOneId
 },{
 	_id: new ObjectID(),    
 	text: 'clean my room',
-	versionKey:'haha',
-	completed:true
+    _user:userTwoId    
 
 }];
 
