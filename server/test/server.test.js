@@ -333,7 +333,8 @@ describe('Delete /users/logout', () => {
                 done();
             }).catch(e => {
                 done(e);
-            });
+			});
+			
         });
     });
 });
