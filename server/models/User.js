@@ -107,11 +107,11 @@ userSchema.pre('save', function(next){
 userSchema.statics.findByCredentials = function(email,password){
 	let User = this;
 	return User.findOne({email}).then(user => {
-		if(!user) return Promise.reject('wrong password or password, please try again');
+		if(!user) return Promise.reject('wrong email or password, please try again');
 		return new Promise((resolve,reject) => {
 			bcryptjs.compare(password,user.password,(err,match) => {
 				if(err) reject(err);
-                if(!match)  reject('wrong password or password, please try again');
+                if(!match)  reject('wrong email or password, please try again');
 				resolve(user);
 			});
 		});
